@@ -3,9 +3,12 @@ package com.sumin.coroutineflow.lessons.lesson1
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 
-suspend fun main() {
+//чтобы запустить поток нужен терминальный оператор, в других случаях он не запустится
+// .filter  .map это промежуточные операторы
+suspend fun main() { // .asFlow() создает из колекции поток данных
     val numbers = listOf(3, 4, 8, 16, 5, 7, 11, 32, 41, 28, 43, 47, 84, 116, 53, 59, 61).asFlow()
     numbers.filter { it.isPrime() }
         .filter { it > 20 }
@@ -13,7 +16,7 @@ suspend fun main() {
             println("Map")
             "Number: $it"
         }
-            /////
+      // метод  .collect полная копия forEach
         .collect { println(it) }
 }
 
