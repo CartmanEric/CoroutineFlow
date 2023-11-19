@@ -10,7 +10,7 @@ suspend fun main() {
         .map {
             println("Map")
             "Number: $it"
-        }
+        }// .last() возврашяет последний элемент с потока, .first() дает первый обьект и поток останавливается
         .last()
     println(result)
 }
@@ -18,7 +18,7 @@ suspend fun main() {
 fun getFlowByFlowOfBuilder(): Flow<Int> {
     return flowOf(3, 4, 8, 16, 5, 7, 11, 32, 41, 28, 43, 47, 84, 116, 53, 59, 61)
 }
-
+// .emit кладет данные в поток, аналог postValue в liveData
 fun getFlowByBuilderFlow(): Flow<Int> {
     val firstFlow = getFlowByFlowOfBuilder()
     return flow {
