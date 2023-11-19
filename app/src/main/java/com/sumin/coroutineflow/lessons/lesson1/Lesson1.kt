@@ -13,6 +13,7 @@ suspend fun main() {
             println("Map")
             "Number: $it"
         }
+            /////
         .collect { println(it) }
 }
 
