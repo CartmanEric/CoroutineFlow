@@ -5,6 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class CryptoViewModel : ViewModel() {
@@ -20,15 +24,23 @@ class CryptoViewModel : ViewModel() {
 
     private fun loadData() {
         viewModelScope.launch {
-            while (true) {
-                val currentState = _state.value
-                if (currentState !is State.Content || currentState.currencyList.isEmpty()) {
-                    _state.value = State.Loading
-                }
-                val currencyList = repository.getCurrencyList()
-                _state.value = State.Content(currencyList = currencyList)
-                delay(3000)
-            }
+                repository.getCurrencyList()
+                        // .onStart идет в начале и можно ставить стайт загрузки сюда
+                    .onStart {
+                        val currentState = _state.value
+                        if (currentState !is State.Content || currentState.currencyList.isEmpty()) {
+                            _state.value = State.Loading }
+                            // в .onEach мы можем реагировать на каждый .emit
+                    }.onEach { _state.value = State.Content(currencyList = it) }
+                        // в данном случае .collect и .onEach схожы
+//                    .collect {
+//                    _state.value = State.Content(currencyList = it) }
+                    .collect()
+            //можно вместо вызова viewModelScope.launch делать как ниже, в таком случае  .collect() не нужен
+//                    .launchIn(viewModelScope)
+
+
+
         }
     }
 }
