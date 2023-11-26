@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.sumin.coroutineflow.databinding.ActivityCryptoBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.transform
@@ -40,22 +41,28 @@ class CryptoActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
+        //подписываемся на флов
         lifecycleScope.launch {
+            // аналог .flowWithLifecycle
+//            repeatOnLifecycle(Lifecycle.State.RESUMED){}
             viewModel.state
+                // создаем новый флов и эмитем его дальше, .collect принимает уже новый флов
                 .transform {
                     Log.d("CryptoViewModel", "Transform")
                     delay(10_000)
-                    emit(it)
-                }
+                    emit(it) }
+                //может приостанавливать флов когда экран свернут, важно вызывать его после .transform
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
                 .collect {
                     when (it) {
                         is State.Initial -> {
                             binding.progressBarLoading.isVisible = false
                         }
+
                         is State.Loading -> {
                             binding.progressBarLoading.isVisible = true
                         }
+
                         is State.Content -> {
                             binding.progressBarLoading.isVisible = false
                             adapter.submitList(it.currencyList)

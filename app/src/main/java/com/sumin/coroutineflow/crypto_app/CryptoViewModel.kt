@@ -19,6 +19,6 @@ class CryptoViewModel : ViewModel() {
             Log.d("CryptoViewModel", "OnEach")
         }
         .onCompletion {
-            Log.d("CryptoViewModel", "Complete")
+           // выходит после выполнения флов, без разницы удачной или нет
         }
 }
