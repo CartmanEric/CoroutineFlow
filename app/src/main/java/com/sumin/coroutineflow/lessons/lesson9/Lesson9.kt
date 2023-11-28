@@ -10,7 +10,7 @@ val coroutineScope = CoroutineScope(Dispatchers.IO)
 
 suspend fun main() {
     val flow = MutableSharedFlow<Int>()
-
+//MutableSharedFlow эта функция чтобы создать горячий поток, в нем можно эмитеть значения в любом месте
     coroutineScope.launch {
         repeat(5) {
             println("Emitted: $it")
